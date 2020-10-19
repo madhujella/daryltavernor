@@ -10,7 +10,7 @@ const companyRouter = Router();
 const validations = {
     get: {
         [Segments.PARAMS]: {
-            company_id: Joi.number().optional()
+            company_id: Joi.string().optional()
         }
     },
     post: {
@@ -22,17 +22,17 @@ const validations = {
     },
     put: {
         [Segments.PARAMS]: {
-            company_id: Joi.number().required()
+            company_id: Joi.string().required()
         },
         [Segments.BODY]: {
-            name: Joi.string().required(),
+            name: Joi.string().optional(),
             status: Joi.string().valid('active', 'inactive').optional(),
             affiliate: Joi.boolean().optional()
         }
     },
     delete: {
         [Segments.PARAMS]: {
-            company_id: Joi.number().required()
+            company_id: Joi.string().required()
         }
     }
 }
