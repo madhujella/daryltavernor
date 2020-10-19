@@ -18,6 +18,8 @@
     "mongoose": "^5.10.9"
   },
   "devDependencies": {
-    "nodemon": "^2.0.5"
+    "express-winston": "^4.0.5",
+    "nodemon": "^2.0.5",
+    "winston": "^3.3.3"
   }
 }

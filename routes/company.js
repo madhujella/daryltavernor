@@ -1,56 +1,54 @@
 const { celebrate, Segments, Joi } = require('celebrate');
 const express = require('express');
-const { Joi, celebrate, Segments } = require('celebrate');
 
-const { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } = require('../controllers/company');
+const { addCompany, deleteCompany, getCompany, updateCompany } = require('../controllers/company');
 
 const { Router } = express;
 
-module.exports = Router('/company')
-    .get('/:company_id', celebrate({
+const companyRouter = Router();
+
+const validations = {
+    get: {
         [Segments.PARAMS]: {
-            company_id: Joi.number()
+            company_id: Joi.number().optional()
         }
-    }), async (req, res, next) => {
-        res.status(200)
-        const data = req.params.company_id ? await getCompany(req.params.company_id) : await getCompanies()
-        res.json(data)
-        next()
-    })
-    .post('/', celebrate({
+    },
+    post: {
         [Segments.BODY]: {
             name: Joi.string().required(),
-            status: Joi.string().allow(['active', 'inactive']),
-            affiliate: Joi.boolean()
+            status: Joi.string().valid('active', 'inactive').optional(),
+            affiliate: Joi.boolean().optional()
         }
-    }), async (req, res, next) => {
-        res.status(201)
-        const data = await addCompany(req.body)
-        res.json(data)
-        next()
-    })
-    .put('/:company_id', celebrate({
+    },
+    put: {
         [Segments.PARAMS]: {
             company_id: Joi.number().required()
         },
         [Segments.BODY]: {
             name: Joi.string().required(),
-            status: Joi.string().allow(['active', 'inactive']),
-            affiliate: Joi.boolean()
+            status: Joi.string().valid('active', 'inactive').optional(),
+            affiliate: Joi.boolean().optional()
         }
-    }), async (req, res, next) => {
-        res.status(201)
-        const data = await updateCompany(req.params.company_id, req.body)
-        res.json(data)
-        next()
-    })
-    .delete('/:company_id', celebrate({
+    },
+    delete: {
         [Segments.PARAMS]: {
             company_id: Joi.number().required()
         }
-    }), async (req, res, next) => {
-        res.status(200)
-        const data = await deleteCompany(req.params.company_id)
-        res.json(data)
-        next()
-    })
+    }
+}
+
+companyRouter
+    .route('/company')
+    .get(celebrate(validations.get), getCompany)
+    .post(celebrate(validations.post), addCompany)
+
+companyRouter
+    .route('/company/:company_id')
+    .get(celebrate(validations.get), getCompany)
+    .put(celebrate(validations.put), updateCompany)
+    .delete(celebrate(validations.delete), deleteCompany)
+
+module.exports = companyRouter;
+
+
+

@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-module.exports = async (req, res, next) => {
+exports.dbConnect = async (req, res, next) => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/company')
+        const db = await mongoose.connect('mongodb://localhost:27017/company', { useNewUrlParser: true, useUnifiedTopology: true })
+        console.log(db)
         next()
     } catch (e) {
-        res.end(e)
+        console.log(e)
+        res.json(e)
     }
 }
